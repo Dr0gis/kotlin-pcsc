@@ -78,7 +78,7 @@ kotlin {
     }
 }
 
-/*publishing {
+publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["kotlin"])
@@ -87,7 +87,7 @@ kotlin {
             version = "0.0.1"
         }
     }
-}*/
+}
 
 tasks.withType<DokkaTask>().configureEach {
     outputDirectory.set(buildDir.resolve("dokka"))
