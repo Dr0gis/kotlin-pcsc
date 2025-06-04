@@ -44,7 +44,7 @@ kotlin {
     }*/
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVer")
@@ -52,22 +52,19 @@ kotlin {
             languageSettings.optIn("kotlin.ExperimentalStdlibApi")
         }
 
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-annotations-common"))
             }
         }
 
-        val nativeMain by creating {
-            dependsOn(sourceSets["commonMain"])
+        nativeMain {
+            //dependsOn(sourceSets["commonMain"])
         }
         /*val nativeMacosMain by creating {
             dependsOn(nativeMain)
         }*/
-        val nativeWindowsMain by creating {
-            dependsOn(nativeMain)
-        }
 
        /* val linuxX64Main by getting {
             dependsOn(nativeMain)
@@ -75,8 +72,8 @@ kotlin {
         val macosX64Main by getting {
             dependsOn(nativeMacosMain)
         }*/
-        val mingwX64Main by getting {
-            dependsOn(nativeWindowsMain)
+        mingwX64Main {
+            //dependsOn(nativeWindowsMain)
         }
     }
 }
