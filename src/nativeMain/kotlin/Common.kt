@@ -16,11 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(ExperimentalNativeApi::class, ExperimentalForeignApi::class)
+
 package au.id.micolous.kotlin.pcsc
 
 import au.id.micolous.kotlin.pcsc.internal.*
 import kotlin.native.Platform
 import kotlinx.cinterop.*
+import kotlin.experimental.ExperimentalNativeApi
 
 internal actual val isLittleEndian = Platform.isLittleEndian
 internal val DWORD_ZERO = 0.convert<DWORD>()

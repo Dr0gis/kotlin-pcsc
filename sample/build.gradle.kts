@@ -10,54 +10,54 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    commonMainImplementation(kotlin("stdlib-common"))
-    commonMainImplementation(rootProject)
-}
-
 kotlin {
-    linuxX64()
-    macosX64()
+    //linuxX64()
+    //macosX64()
     mingwX64()
     jvm("jna")
 
-    targets.filterIsInstance<KotlinNativeTarget>().forEach {
-        it.binaries {
-            executable("pcsc_sample")
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(kotlin("stdlib-common"))
+                implementation(rootProject)
+            }
         }
-    }
 
-    targets.filterIsInstance<KotlinJvmTarget>().forEach {
-        it.compilations["main"].apply {
+        val jnaMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
             }
         }
+
+        all {
+            languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
+        }
     }
 
-    sourceSets.all {
-        languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
+    targets.withType<KotlinNativeTarget>().configureEach {
+        binaries {
+            executable("pcsc_sample")
+        }
     }
 }
 
-afterEvaluate {
-    val jnaFatJar by tasks.creating(Jar::class) {
-        dependsOn("jnaJar")
-        group = "jar"
-        manifest.attributes["Main-Class"] = "SampleKt"
-        val deps = configurations["jnaRuntimeClasspath"].filter {
-            it.name.endsWith(".jar") } +
-                project.tasks["jnaJar"].outputs.files
-        deps.forEach { from(zipTree(it)) }
-        exclude(
-            // Added by JDK9, and exists in multiple dependency JARs (which conflict).
-            // Fat executable JARs don't need modules support anyway.
-            "META-INF/versions/9/module-info.class",
-        )
-    }
+// Файл jar должен быть настроен как отдельная задача, без изменения зависимостей
+tasks.register<Jar>("jnaFatJar") {
+    dependsOn("jnaJar")
+    group = "jar"
+    manifest.attributes["Main-Class"] = "SampleKt"
 
-    tasks.filterIsInstance<AbstractArchiveTask>().forEach {
-        it.isPreserveFileTimestamps = false
-        it.isReproducibleFileOrder = true
-    }
+    val runtimeClasspath = configurations.named("jnaRuntimeClasspath").get()
+    val jnaJar = tasks.named("jnaJar").get().outputs.files
+
+    from(runtimeClasspath.map { zipTree(it) } + jnaJar.map { zipTree(it) })
+
+    exclude("META-INF/versions/9/module-info.class")
+}
+
+// Настройка воспроизводимости (можно оставить в afterEvaluate)
+tasks.withType<AbstractArchiveTask>().configureEach {
+    isPreserveFileTimestamps = false
+    isReproducibleFileOrder = true
 }
