@@ -7,7 +7,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "au.id.micolous.kotlin.pcsc"
+group = "au.id.micolous.kotlin-pcsc"
 version = "0.0.1"
 
 repositories {
@@ -78,7 +78,7 @@ kotlin {
     }
 }
 
-publishing {
+/*publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["kotlin"])
@@ -87,7 +87,7 @@ publishing {
             version = "0.0.1"
         }
     }
-}
+}*/
 
 tasks.withType<DokkaTask>().configureEach {
     outputDirectory.set(buildDir.resolve("dokka"))
