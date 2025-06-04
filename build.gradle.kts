@@ -78,11 +78,16 @@ kotlin {
     }
 }
 
-/*publishing {
+publishing {
     publications {
-        withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPublication>()
+        create<MavenPublication>("maven") {
+            from(components["kotlin"])
+            groupId = "au.id.micolous.kotlin-pcsc"
+            artifactId = "pcsc"
+            version = "0.0.1"
+        }
     }
-}*/
+}
 
 tasks.withType<DokkaTask>().configureEach {
     outputDirectory.set(buildDir.resolve("dokka"))
