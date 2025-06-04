@@ -80,11 +80,8 @@ kotlin {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
-            from(components["kotlin"])
-            groupId = "au.id.micolous.kotlin-pcsc"
-            artifactId = "pcsc"
-            version = "0.0.1"
+        val kotlinMultiplatform by getting {
+            //    artifactId = "kotlin-pcsc"
         }
     }
 }
